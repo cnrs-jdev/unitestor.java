@@ -2,5 +2,8 @@ package robot;
 
 
 public enum Instruction {
-    TURNLEFT, FORWARD
+    TURNLEFT,
+    BACKWARD,
+    TURNRIGHT,
+    FORWARD
 }

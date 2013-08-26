@@ -2,19 +2,19 @@ package robot;
 
 public class Coordinates {
 
-    private float x;
-    private float y;
+    private int x;
+    private int y;
 
-    public Coordinates(float x, float y) {
+    public Coordinates(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getX() {
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 }

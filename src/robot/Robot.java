@@ -14,20 +14,24 @@ public class Robot {
     private boolean isLanded;
     private RoadBook roadBook;
     private final double energyConsumption; // energie consommée pour la réalisation d'une action dans les conditions idéales
+    private LandSensor landSensor;
+    private Battery cells;
 
     public Robot() {
-        this(1.0);
+        this(1.0, new Battery());
     }
 
-    public Robot(double energyConsumption) {
+    public Robot(double energyConsumption, Battery cells) {
         isLanded = false;
         this.energyConsumption = energyConsumption;
+        this.cells = cells;
     }
 
-    public void land(Coordinates landPosition) {
+    public void land(Coordinates landPosition, LandSensor sensor) {
         position = landPosition;
         direction = NORTH;
         isLanded = true;
+        landSensor = sensor;
     }
 
     public int getXposition() throws UnlandedRobotException {
@@ -45,9 +49,16 @@ public class Robot {
         return direction;
     }
 
-    public void moveForward() throws UnlandedRobotException {
+    public void moveForward() throws UnlandedRobotException, InterruptedException {
         if (!isLanded) throw new UnlandedRobotException();
-        position = MapTools.nextForwardPosition(position, direction);
+        Coordinates nextPosition = MapTools.nextForwardPosition(position, direction);
+        double neededEnergy = landSensor.getPointToPointEnergyCoefficient(position, nextPosition) * energyConsumption;
+        try {
+            cells.use(neededEnergy);
+        } catch (InsufficientChargeException e) {
+            wait(cells.timeToSufficientCharge(neededEnergy));
+        }
+        position = nextPosition;
     }
 
     public void moveBackward() throws UnlandedRobotException {
@@ -69,7 +80,7 @@ public class Robot {
         this.roadBook = roadBook;
     }
 
-    public void letsGo() throws UnlandedRobotException, UndefinedRoadbookException {
+    public void letsGo() throws UnlandedRobotException, UndefinedRoadbookException, InterruptedException {
         if (roadBook==null) throw new UndefinedRoadbookException();
         while (roadBook.hasInstruction()) {
             Instruction nextInstruction = roadBook.next();

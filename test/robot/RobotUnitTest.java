@@ -13,7 +13,7 @@ public class RobotUnitTest {
     @Test
     public void testLand() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         Assert.assertEquals(3, robot.getXposition());
         Assert.assertEquals(0, robot.getYposition());
     }
@@ -25,9 +25,9 @@ public class RobotUnitTest {
     }
 
     @Test
-    public void testMoveForward() throws UnlandedRobotException {
+    public void testMoveForward() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveForward();
@@ -39,7 +39,7 @@ public class RobotUnitTest {
     @Test
     public void testMoveBackward() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveBackward();
@@ -50,7 +50,7 @@ public class RobotUnitTest {
     @Test
     public void testTurnLeft() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         robot.turnLeft();
         Assert.assertEquals(WEST, robot.getDirection());
     }
@@ -58,7 +58,7 @@ public class RobotUnitTest {
     @Test
     public void testTurnRight() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         robot.turnRight();
         Assert.assertEquals(EAST, robot.getDirection());
     }
@@ -66,14 +66,14 @@ public class RobotUnitTest {
     @Test (expected = UndefinedRoadbookException.class)
     public void testLetsGoWithoutRoadbook() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         robot.letsGo();
     }
 
     @Test
     public void testFollowInstruction() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(5, 7));
+        robot.land(new Coordinates(5, 7), null);
         robot.setRoadBook(new RoadBook(Arrays.asList(Instruction.FORWARD, Instruction.FORWARD, Instruction.TURNLEFT, Instruction.FORWARD)));
         robot.letsGo();
         Assert.assertEquals(4, robot.getXposition());
@@ -89,14 +89,14 @@ public class RobotUnitTest {
     @Test
     public void testMoveTo() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         robot.computeRoadTo(new Coordinates(7, 5));
     }
 
     @Test
-    public void testComputeRoadTo() throws UnlandedRobotException, UndefinedRoadbookException {
+    public void testComputeRoadTo() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3,0), null);
         robot.computeRoadTo(new Coordinates(0, -6));
         robot.letsGo();
         Assert.assertEquals(0, robot.getXposition());

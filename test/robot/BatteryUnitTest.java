@@ -1,6 +1,7 @@
 package robot;
 
 import junit.framework.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -20,6 +21,7 @@ public class BatteryUnitTest {
         Assert.assertEquals(111f, cell.getChargeLevel());
     }
 
+    @Ignore
     @Test
     public void testSetup() throws InterruptedException {
         Battery cell = new Battery();
@@ -49,5 +51,11 @@ public class BatteryUnitTest {
         Battery cell = new Battery();
         cell.use(cell.getChargeLevel());
         Assert.assertEquals(0f, cell.getChargeLevel());
+    }
+
+    @Test
+    public void testTimeToSufficientCharge() {
+        Battery cell = new Battery();
+        Assert.assertEquals(7000,cell.timeToSufficientCharge(200));
     }
 }

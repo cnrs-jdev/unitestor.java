@@ -1,10 +1,12 @@
 package robot;
 
-import apple.laf.JRSUIConstants;
 import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static apple.laf.JRSUIConstants.Direction.EAST;
+import static apple.laf.JRSUIConstants.Direction.WEST;
 
 public class RobotUnitTest {
 
@@ -12,8 +14,8 @@ public class RobotUnitTest {
     public void testLand() throws UnlandedRobotException {
         Robot robot = new Robot();
         robot.land(new Coordinates(3,0));
-        Assert.assertEquals(3f, robot.getXposition());
-        Assert.assertEquals(0f, robot.getYposition());
+        Assert.assertEquals(3, robot.getXposition());
+        Assert.assertEquals(0, robot.getYposition());
     }
 
     @Test (expected = UnlandedRobotException.class)
@@ -26,8 +28,8 @@ public class RobotUnitTest {
     public void testMoveForward() throws UnlandedRobotException {
         Robot robot = new Robot();
         robot.land(new Coordinates(3,0));
-        float currentXposition = robot.getXposition();
-        float currentYposition = robot.getYposition();
+        int currentXposition = robot.getXposition();
+        int currentYposition = robot.getYposition();
         robot.moveForward();
         Assert.assertEquals(currentXposition, robot.getXposition());
         Assert.assertEquals(currentYposition+1, robot.getYposition());
@@ -38,8 +40,8 @@ public class RobotUnitTest {
     public void testMoveBackward() throws UnlandedRobotException {
         Robot robot = new Robot();
         robot.land(new Coordinates(3,0));
-        float currentXposition = robot.getXposition();
-        float currentYposition = robot.getYposition();
+        int currentXposition = robot.getXposition();
+        int currentYposition = robot.getYposition();
         robot.moveBackward();
         Assert.assertEquals(currentXposition, robot.getXposition());
         Assert.assertEquals(currentYposition-1, robot.getYposition());
@@ -50,7 +52,7 @@ public class RobotUnitTest {
         Robot robot = new Robot();
         robot.land(new Coordinates(3,0));
         robot.turnLeft();
-        Assert.assertEquals(JRSUIConstants.Direction.WEST, robot.getDirection());
+        Assert.assertEquals(WEST, robot.getDirection());
     }
 
     @Test
@@ -58,16 +60,46 @@ public class RobotUnitTest {
         Robot robot = new Robot();
         robot.land(new Coordinates(3,0));
         robot.turnRight();
-        Assert.assertEquals(JRSUIConstants.Direction.EAST, robot.getDirection());
+        Assert.assertEquals(EAST, robot.getDirection());
+    }
+
+    @Test (expected = UndefinedRoadbookException.class)
+    public void testLetsGoWithoutRoadbook() throws Exception {
+        Robot robot = new Robot();
+        robot.land(new Coordinates(3,0));
+        robot.letsGo();
     }
 
     @Test
-    public void testFollowInstruction() throws UnlandedRobotException {
+    public void testFollowInstruction() throws Exception {
         Robot robot = new Robot();
         robot.land(new Coordinates(5, 7));
         robot.setRoadBook(new RoadBook(Arrays.asList(Instruction.FORWARD, Instruction.FORWARD, Instruction.TURNLEFT, Instruction.FORWARD)));
         robot.letsGo();
-        Assert.assertEquals(4.0f, robot.getXposition());
-        Assert.assertEquals(9.0f, robot.getYposition());
+        Assert.assertEquals(4, robot.getXposition());
+        Assert.assertEquals(9, robot.getYposition());
+    }
+
+    @Test (expected = UnlandedRobotException.class)
+    public void testMoveToWithUnlandedRobot() throws Exception {
+        Robot robot = new Robot();
+        robot.computeRoadTo(new Coordinates(3, 5));
+    }
+
+    @Test
+    public void testMoveTo() throws UnlandedRobotException {
+        Robot robot = new Robot();
+        robot.land(new Coordinates(3,0));
+        robot.computeRoadTo(new Coordinates(7, 5));
+    }
+
+    @Test
+    public void testComputeRoadTo() throws UnlandedRobotException, UndefinedRoadbookException {
+        Robot robot = new Robot();
+        robot.land(new Coordinates(3,0));
+        robot.computeRoadTo(new Coordinates(0, -6));
+        robot.letsGo();
+        Assert.assertEquals(0, robot.getXposition());
+        Assert.assertEquals(-6, robot.getYposition());
     }
 }

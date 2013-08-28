@@ -2,6 +2,7 @@ package robot;
 
 import junit.framework.Assert;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 
@@ -27,7 +28,9 @@ public class RobotUnitTest {
     @Test
     public void testMoveForward() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(3,0), sensor);
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveForward();
@@ -39,7 +42,9 @@ public class RobotUnitTest {
     @Test
     public void testMoveBackward() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(3,0), sensor);
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveBackward();
@@ -50,7 +55,9 @@ public class RobotUnitTest {
     @Test
     public void testTurnLeft() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(3,0), sensor);
         robot.turnLeft();
         Assert.assertEquals(WEST, robot.getDirection());
     }
@@ -58,7 +65,9 @@ public class RobotUnitTest {
     @Test
     public void testTurnRight() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(3,0), sensor);
         robot.turnRight();
         Assert.assertEquals(EAST, robot.getDirection());
     }
@@ -66,14 +75,18 @@ public class RobotUnitTest {
     @Test (expected = UndefinedRoadbookException.class)
     public void testLetsGoWithoutRoadbook() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(3,0), sensor);
         robot.letsGo();
     }
 
     @Test
     public void testFollowInstruction() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(5, 7), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(5, 7), sensor);
         robot.setRoadBook(new RoadBook(Arrays.asList(Instruction.FORWARD, Instruction.FORWARD, Instruction.TURNLEFT, Instruction.FORWARD)));
         robot.letsGo();
         Assert.assertEquals(4, robot.getXposition());
@@ -96,7 +109,9 @@ public class RobotUnitTest {
     @Test
     public void testComputeRoadTo() throws Exception {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        robot.land(new Coordinates(3,0), sensor);
         robot.computeRoadTo(new Coordinates(0, -6));
         robot.letsGo();
         Assert.assertEquals(0, robot.getXposition());

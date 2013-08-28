@@ -7,6 +7,7 @@ import java.util.TimerTask;
 
 public class Battery {
 
+    private final long CHARGE_TOP = 1000;
     private float chargeLevel;
 
     public Battery() {
@@ -14,7 +15,11 @@ public class Battery {
     }
 
     public void charge() {
-        chargeLevel = chargeLevel*1.1f + 1;
+        chargeLevel = chargeFunction(chargeLevel);
+    }
+
+    private static float chargeFunction(float charge) {
+        return charge*1.1f + 1;
     }
 
     public void setUp() {
@@ -24,15 +29,25 @@ public class Battery {
             public void run() {
                 charge();
             }
-        }, 0, 1000);
+        }, 0, CHARGE_TOP);
     }
 
     public float getChargeLevel(){
         return chargeLevel;
     }
 
-    public void use(float energy) throws InsufficientChargeException {
+    public void use(double energy) throws InsufficientChargeException {
         if (chargeLevel < energy) throw new InsufficientChargeException();
         chargeLevel -= energy;
+    }
+
+    public long timeToSufficientCharge(double neededEnergy) {
+        int clock = 0;
+        float charge = chargeLevel;
+        while (charge<neededEnergy) {
+            charge = chargeFunction(charge);
+            clock++;
+        }
+        return clock*CHARGE_TOP;
     }
 }

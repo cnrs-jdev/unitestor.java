@@ -4,13 +4,18 @@ import java.util.Random;
 
 public class LandSensor {
 
-    public double getPointToPointEnergyCoefficient(Coordinates coordinate1, Coordinates coordinate2) {
-        Random random = new Random();
-        double distance = distance(coordinate1, coordinate2);
-        return 1 + distance / (distance *random.nextDouble());
+    private Random random;
+
+    public LandSensor(Random random) {
+        this.random = random;
     }
 
-    public double distance(Coordinates coordinate1, Coordinates coordinate2) {
-        return Math.sqrt(Math.pow(coordinate1.getX()-coordinate2.getX(), 2) + Math.pow(coordinate1.getX()-coordinate2.getX(),2));
+    public double getPointToPointEnergyCoefficient(Coordinates coordinate1, Coordinates coordinate2) {
+        double distance = distance(coordinate1, coordinate2);
+        return 1 + distance / (distance * random.nextDouble());
+    }
+
+    public static double distance(Coordinates coordinate1, Coordinates coordinate2) {
+        return Math.sqrt(Math.pow(coordinate1.getX()-coordinate2.getX(), 2) + Math.pow(coordinate1.getY()-coordinate2.getY(),2));
     }
 }

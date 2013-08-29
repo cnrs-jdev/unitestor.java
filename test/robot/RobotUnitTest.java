@@ -8,6 +8,11 @@ import java.util.Arrays;
 
 import static apple.laf.JRSUIConstants.Direction.EAST;
 import static apple.laf.JRSUIConstants.Direction.WEST;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyDouble;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
 public class RobotUnitTest {
 
@@ -28,9 +33,7 @@ public class RobotUnitTest {
     @Test
     public void testMoveForward() throws Exception {
         Robot robot = new Robot();
-        LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
-        robot.land(new Coordinates(3,0), sensor);
+        landNoEnergyConsumeRobot(robot);
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveForward();
@@ -39,12 +42,56 @@ public class RobotUnitTest {
 
     }
 
+    private void landNoEnergyConsumeRobot(Robot robot) {
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(0.0);
+        robot.land(new Coordinates(3,0), sensor);
+    }
+
+    @Test
+    public void testMoveForwardWithEnergyConsumptionAndSufficientCharge() throws Exception {
+        Battery cells = Mockito.mock(Battery.class);
+        Mockito.doNothing().when(cells).use(anyDouble());
+        Robot robot = new Robot(2.0, cells);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(1.0,2.0,5.0,1.0);
+        robot.land(new Coordinates(3,0), sensor);
+        robot.moveForward();
+        Assert.assertEquals(3, robot.getXposition());
+        Assert.assertEquals(1, robot.getYposition());
+        Mockito.verify(cells, never()).timeToSufficientCharge(anyDouble());
+    }
+
+    @Test
+    public void testMoveForwardWithEnergyConsumptionAndInsufficientCharge() throws Exception {
+        Battery cells = Mockito.mock(Battery.class);
+        Mockito.doThrow(new InsufficientChargeException()).doNothing().when(cells).use(anyDouble());
+        when(cells.timeToSufficientCharge(anyDouble())).thenReturn(0l);
+        Robot robot = new Robot(2.0, cells);
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(5.0,2.0,5.0,1.0);
+        robot.land(new Coordinates(3,0), sensor);
+        robot.moveForward();
+        Assert.assertEquals(3, robot.getXposition());
+        Assert.assertEquals(1, robot.getYposition());
+        Mockito.verify(cells, times(1)).timeToSufficientCharge(anyDouble());
+    }
+
+    @Test
+    public void testMoveForwardWithEnergyConsumptionAndInsufficientCharge2() throws Exception {
+        Robot robot = new Robot(34.0, new Battery());
+        LandSensor sensor = Mockito.mock(LandSensor.class);
+        when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(5.0,2.0,5.0,1.0);
+        robot.land(new Coordinates(3,0), sensor);
+        robot.moveForward();
+        Assert.assertEquals(3, robot.getXposition());
+        Assert.assertEquals(1, robot.getYposition());
+    }
+
     @Test
     public void testMoveBackward() throws UnlandedRobotException {
         Robot robot = new Robot();
-        LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
-        robot.land(new Coordinates(3,0), sensor);
+        landNoEnergyConsumeRobot(robot);
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveBackward();
@@ -55,9 +102,7 @@ public class RobotUnitTest {
     @Test
     public void testTurnLeft() throws UnlandedRobotException {
         Robot robot = new Robot();
-        LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
-        robot.land(new Coordinates(3,0), sensor);
+        landNoEnergyConsumeRobot(robot);
         robot.turnLeft();
         Assert.assertEquals(WEST, robot.getDirection());
     }
@@ -65,9 +110,7 @@ public class RobotUnitTest {
     @Test
     public void testTurnRight() throws UnlandedRobotException {
         Robot robot = new Robot();
-        LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
-        robot.land(new Coordinates(3,0), sensor);
+        landNoEnergyConsumeRobot(robot);
         robot.turnRight();
         Assert.assertEquals(EAST, robot.getDirection());
     }
@@ -75,9 +118,7 @@ public class RobotUnitTest {
     @Test (expected = UndefinedRoadbookException.class)
     public void testLetsGoWithoutRoadbook() throws Exception {
         Robot robot = new Robot();
-        LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
-        robot.land(new Coordinates(3,0), sensor);
+        landNoEnergyConsumeRobot(robot);
         robot.letsGo();
     }
 
@@ -85,7 +126,7 @@ public class RobotUnitTest {
     public void testFollowInstruction() throws Exception {
         Robot robot = new Robot();
         LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
+        when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(1.0);
         robot.land(new Coordinates(5, 7), sensor);
         robot.setRoadBook(new RoadBook(Arrays.asList(Instruction.FORWARD, Instruction.FORWARD, Instruction.TURNLEFT, Instruction.FORWARD)));
         robot.letsGo();
@@ -102,19 +143,19 @@ public class RobotUnitTest {
     @Test
     public void testMoveTo() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0), null);
+        robot.land(new Coordinates(3, 0), null);
         robot.computeRoadTo(new Coordinates(7, 5));
     }
 
     @Test
     public void testComputeRoadTo() throws Exception {
         Robot robot = new Robot();
-        LandSensor sensor = Mockito.mock(LandSensor.class);
-        Mockito.when(sensor.getPointToPointEnergyCoefficient(Mockito.any(Coordinates.class), Mockito.any(Coordinates.class))).thenReturn(1.0);
-        robot.land(new Coordinates(3,0), sensor);
+        landNoEnergyConsumeRobot(robot);
         robot.computeRoadTo(new Coordinates(0, -6));
         robot.letsGo();
         Assert.assertEquals(0, robot.getXposition());
         Assert.assertEquals(-6, robot.getYposition());
     }
+
+
 }

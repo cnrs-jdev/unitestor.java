@@ -32,6 +32,7 @@ public class Robot {
         direction = NORTH;
         isLanded = true;
         landSensor = sensor;
+        cells.setUp();
     }
 
     public int getXposition() throws UnlandedRobotException {
@@ -53,11 +54,16 @@ public class Robot {
         if (!isLanded) throw new UnlandedRobotException();
         Coordinates nextPosition = MapTools.nextForwardPosition(position, direction);
         double neededEnergy = landSensor.getPointToPointEnergyCoefficient(position, nextPosition) * energyConsumption;
-        try {
-            cells.use(neededEnergy);
-        } catch (InsufficientChargeException e) {
-            wait(cells.timeToSufficientCharge(neededEnergy));
-        }
+        boolean move = false;
+        do {
+            try {
+                cells.use(neededEnergy);
+                move = true;
+            } catch (InsufficientChargeException e) {
+                long l = cells.timeToSufficientCharge(neededEnergy);
+                Thread.sleep(l);
+            }
+        } while (!move);
         position = nextPosition;
     }
 
@@ -81,7 +87,7 @@ public class Robot {
     }
 
     public void letsGo() throws UnlandedRobotException, UndefinedRoadbookException, InterruptedException {
-        if (roadBook==null) throw new UndefinedRoadbookException();
+        if (roadBook == null) throw new UndefinedRoadbookException();
         while (roadBook.hasInstruction()) {
             Instruction nextInstruction = roadBook.next();
             if (nextInstruction == FORWARD) moveForward();

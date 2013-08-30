@@ -1,10 +1,12 @@
 package robot;
 
-import apple.laf.JRSUIConstants;
 import junit.framework.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static robot.Direction.EAST;
+import static robot.Direction.WEST;
 
 public class RobotUnitTest {
 
@@ -25,7 +27,7 @@ public class RobotUnitTest {
     @Test
     public void testMoveForward() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveForward();
@@ -42,23 +44,23 @@ public class RobotUnitTest {
         int currentYposition = robot.getYposition();
         robot.moveBackward();
         Assert.assertEquals(currentXposition, robot.getXposition());
-        Assert.assertEquals(currentYposition-1, robot.getYposition());
+        Assert.assertEquals(currentYposition - 1, robot.getYposition());
     }
 
     @Test
     public void testTurnLeft() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         robot.turnLeft();
-        Assert.assertEquals(JRSUIConstants.Direction.WEST, robot.getDirection());
+        Assert.assertEquals(WEST, robot.getDirection());
     }
 
     @Test
     public void testTurnRight() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         robot.turnRight();
-        Assert.assertEquals(JRSUIConstants.Direction.EAST, robot.getDirection());
+        Assert.assertEquals(EAST, robot.getDirection());
     }
 
     @Test

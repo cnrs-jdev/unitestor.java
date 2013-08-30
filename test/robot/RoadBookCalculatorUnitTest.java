@@ -1,14 +1,17 @@
 package robot;
 
-import apple.laf.JRSUIConstants;
-import junit.framework.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static robot.Direction.EAST;
+import static robot.Direction.NORTH;
+import static robot.Direction.SOUTH;
+import static robot.Direction.WEST;
+import static robot.RoadBookCalculator.calculateRoadBook;
 
 import java.util.ArrayList;
 
-import static robot.Direction.*;
-import static robot.RoadBookCalculator.calculateRoadBook;
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class RoadBookCalculatorUnitTest {
 

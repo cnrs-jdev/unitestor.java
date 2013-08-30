@@ -6,8 +6,8 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 
-import static apple.laf.JRSUIConstants.Direction.EAST;
-import static apple.laf.JRSUIConstants.Direction.WEST;
+import static robot.Direction.EAST;
+import static robot.Direction.WEST;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyDouble;
 import static org.mockito.Mockito.never;
@@ -156,6 +156,4 @@ public class RobotUnitTest {
         Assert.assertEquals(0, robot.getXposition());
         Assert.assertEquals(-6, robot.getYposition());
     }
-
-
 }

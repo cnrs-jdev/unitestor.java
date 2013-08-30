@@ -2,8 +2,7 @@ package robot;
 
 import java.util.ArrayList;
 
-import static apple.laf.JRSUIConstants.Direction;
-import static apple.laf.JRSUIConstants.Direction.*;
+import static robot.Direction.*;
 import static robot.Instruction.*;
 import static robot.RoadBookCalculator.calculateRoadBook;
 

@@ -5,8 +5,9 @@ import org.junit.Test;
 
 import java.util.Arrays;
 
-import static apple.laf.JRSUIConstants.Direction.EAST;
-import static apple.laf.JRSUIConstants.Direction.WEST;
+import static robot.Direction.EAST;
+import static robot.Direction.WEST;
+
 
 public class RobotUnitTest {
 
@@ -27,7 +28,7 @@ public class RobotUnitTest {
     @Test
     public void testMoveForward() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         int currentXposition = robot.getXposition();
         int currentYposition = robot.getYposition();
         robot.moveForward();
@@ -44,13 +45,13 @@ public class RobotUnitTest {
         int currentYposition = robot.getYposition();
         robot.moveBackward();
         Assert.assertEquals(currentXposition, robot.getXposition());
-        Assert.assertEquals(currentYposition-1, robot.getYposition());
+        Assert.assertEquals(currentYposition - 1, robot.getYposition());
     }
 
     @Test
     public void testTurnLeft() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         robot.turnLeft();
         Assert.assertEquals(WEST, robot.getDirection());
     }
@@ -58,7 +59,7 @@ public class RobotUnitTest {
     @Test
     public void testTurnRight() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         robot.turnRight();
         Assert.assertEquals(EAST, robot.getDirection());
     }
@@ -89,7 +90,7 @@ public class RobotUnitTest {
     @Test
     public void testMoveTo() throws UnlandedRobotException {
         Robot robot = new Robot();
-        robot.land(new Coordinates(3,0));
+        robot.land(new Coordinates(3, 0));
         robot.computeRoadTo(new Coordinates(7, 5));
     }
 

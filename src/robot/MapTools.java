@@ -1,7 +1,6 @@
 package robot;
 
-import static apple.laf.JRSUIConstants.Direction;
-import static apple.laf.JRSUIConstants.Direction.*;
+import static robot.Direction.*;
 
 public class MapTools {
 

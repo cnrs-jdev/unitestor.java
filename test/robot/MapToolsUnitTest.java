@@ -1,10 +1,9 @@
 package robot;
 
-import apple.laf.JRSUIConstants;
 import junit.framework.Assert;
 import org.junit.Test;
 
-import static apple.laf.JRSUIConstants.Direction.*;
+import static robot.Direction.*;
 
 public class MapToolsUnitTest {
 

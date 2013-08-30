@@ -3,8 +3,7 @@ package robot;
 import java.util.ArrayList;
 import java.util.List;
 
-import static apple.laf.JRSUIConstants.Direction;
-import static apple.laf.JRSUIConstants.Direction.*;
+import static robot.Direction.*;
 import static robot.Instruction.*;
 
 public class Robot {

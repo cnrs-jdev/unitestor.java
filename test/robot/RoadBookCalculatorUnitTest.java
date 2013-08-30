@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static apple.laf.JRSUIConstants.Direction.*;
+import static robot.Direction.*;
 import static robot.RoadBookCalculator.calculateRoadBook;
 
 public class RoadBookCalculatorUnitTest {

@@ -18,12 +18,17 @@ public class RobotUnitTest {
 
     @Test
     public void testLand() throws UnlandedRobotException {
+        //---DEFINE---
         Robot robot = new Robot();
+        //---WHEN---
         robot.land(new Coordinates(3,0), null);
+        //---THEN---
         Assert.assertEquals(3, robot.getXposition());
         Assert.assertEquals(0, robot.getYposition());
     }
 
+    // tester l'apparition d'une exception, l'annotation @Test intègre expected suivi de la classe de l'exception attendue
+    // Attention : il est parfois nécessaire de s'assurer que l'exception n'apparaît pas avant la dernière instruction du test
     @Test (expected = UnlandedRobotException.class)
     public void testRobotMustBeLandedBeforeAnyMove() throws Exception {
         Robot robot = new Robot();
@@ -43,20 +48,29 @@ public class RobotUnitTest {
     }
 
     private void landNoEnergyConsumeRobot(Robot robot) {
+        // utilisation d'un mock pour le LandSensor
         LandSensor sensor = Mockito.mock(LandSensor.class);
+        // quand on appelle la méthode getPointToPointEnergyCoefficient avec n'importe quel paramètre sur le mock
+        // on obtient en retour 0
         when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(0.0);
+        // l'objet mock est considéré comme un véritable LandSensor par le robot et invoquera les méthodes sur l'objet
         robot.land(new Coordinates(3,0), sensor);
     }
 
     @Test
     public void testMoveForwardWithEnergyConsumptionAndSufficientCharge() throws Exception {
+        //---DEFINE---
         Battery cells = Mockito.mock(Battery.class);
         Mockito.doNothing().when(cells).use(anyDouble());
         Robot robot = new Robot(2.0, cells);
         LandSensor sensor = Mockito.mock(LandSensor.class);
         when(sensor.getPointToPointEnergyCoefficient(any(Coordinates.class), any(Coordinates.class))).thenReturn(1.0,2.0,5.0,1.0);
         robot.land(new Coordinates(3,0), sensor);
+
+        //---WHEN---
         robot.moveForward();
+
+        //---THEN---
         Assert.assertEquals(3, robot.getXposition());
         Assert.assertEquals(1, robot.getYposition());
         Mockito.verify(cells, never()).timeToSufficientCharge(anyDouble());

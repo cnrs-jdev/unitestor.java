@@ -91,6 +91,9 @@ public class RobotUnitTest {
         Mockito.verify(cells, times(1)).timeToSufficientCharge(anyDouble());
     }
 
+    // le même test que précédemment mais en utilisant une vraie Battery
+    // Il est plus lent (le thread s'endord pour attendre que la Battery soit suffisamment chargée),
+    // présente le risque d'échouer à cause de la classe Battery
     @Test
     public void testMoveForwardWithEnergyConsumptionAndInsufficientCharge2() throws Exception {
         Robot robot = new Robot(34.0, new Battery());
